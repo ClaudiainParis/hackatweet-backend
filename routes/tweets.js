@@ -29,8 +29,11 @@ router.post('/newtweet', (req, res) => {
 router.get('/byhash/:hashtag', (req, res) => {
     const hashtag = req.params.hashtag;
     Tweet.find({ hashtag: hashtag })
-        .then(data => res.json({ result: true, alltweets: data }))
+        .then(data => res.json({ result: true, tweetsWithHashtag: data }))
 });
+
+//Fait la liste des Hashtags
+ro
 
 //Suppression d'un tweet par son Id
 router.delete('/:tweet', (req, res) => {
