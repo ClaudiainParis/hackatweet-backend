@@ -26,7 +26,11 @@ router.post('/newtweet', (req, res) => {
 });
 
 //Récupérer la liste des tweets par hashtag
-
+router.get('/byhash/:hashtag', (req, res) => {
+    const hashtag = req.params.hashtag;
+    Tweet.find({ hashtag: hashtag })
+        .then(data => res.json({ result: true, alltweets: data }))
+});
 
 //Suppression d'un tweet par son Id
 router.delete('/:tweet', (req, res) => {
@@ -37,17 +41,17 @@ router.delete('/:tweet', (req, res) => {
 //Ajout d'un like sur un tweet
 router.post('/like/:id', (req, res) => {
     const id = req.params.id;
-    Tweet.updateOne(({ _id: id }, { $inc: { numberOfLikes: +1 }}, { new: true } ))
-        .then(data => res.json({ result: true}))
-        .catch(error => res.status(400).send(error));
+    Tweet.updateOne({ _id: id }, { $inc: { numberOfLikes: 1 } })
+    .then(data => res.json({ result: true}))
+    .catch(error => res.status(400).send(error));
 });
 
 //Retrait d'un like sur un tweet
 router.post('/unlike/:id', (req, res) => {
     const id = req.params.id;
-    Tweet.updateOne(({ _id: id }, { $inc: { numberOfLikes: -1 }}, { new: true } ))
-        .then(data => res.json({ result: true}))
-        .catch(error => res.status(400).send(error));
+    Tweet.updateOne({ _id: id }, { $inc: { numberOfLikes: -1 } })
+    .then(data => res.json({ result: true}))
+    .catch(error => res.status(400).send(error));
 });
 
 //Récupère tous les tweets
