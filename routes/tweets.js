@@ -36,9 +36,21 @@ router.get('/byhash/:hashtag', (req, res) => {
 router.get('/hashtags', (req, res) => {
     Tweet.find({ })
         .then(data => {
-            hashtagList = data.map(tweet => tweet.hashtag).flat().filter(e => e);
-            hashtagObject = hashtagList.reduce((cnt, cur) => (cnt[cur] = cnt[cur] + 1 || 1, cnt), {});
-            res.json({ hashtags: hashtagObject })
+                hashtagList = data
+                    .map(tweet => tweet.hashtag)
+                    .flat()
+                    .filter(e => e)
+                    .reduce((cnt, cur) => (cnt[cur] = cnt[cur] + 1 || 1, cnt), {})                  
+                orderedHashtagList = Object.keys(hashtagList)
+                    .sort()
+                    .reduce(
+                    (obj, key) => { 
+                        obj[key] = hashtagList[key]; 
+                        return obj;
+                        }, 
+                        {}
+                    );
+            res.json({ hashtags: orderedHashtagList })
         })
 });
 
@@ -66,8 +78,10 @@ router.post('/unlike/:id', (req, res) => {
 
 //Récupère tous les tweets
 router.get('/alltweets', (req, res) => {
-    Tweet.find()
-        .then(data => res.json({ result: true, alltweets: data }))
+    Tweet.find().sort({date:-1})
+        .then(data => {
+            res.json({ alltweets: data })
+        });
 });
 
 module.exports = router;
