@@ -38,7 +38,6 @@ router.get('/hashtags', (req, res) => {
         .then(data => {
             hashtagList = data.map(tweet => tweet.hashtag).flat().filter(e => e);
             hashtagObject = hashtagList.reduce((cnt, cur) => (cnt[cur] = cnt[cur] + 1 || 1, cnt), {});
-            //hashtagObject = Object.assign({}, hashtagList);
             res.json({ hashtags: hashtagObject })
         })
 });
