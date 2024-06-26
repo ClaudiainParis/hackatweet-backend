@@ -33,7 +33,7 @@ router.get('/byhash/:hashtag', (req, res) => {
 });
 
 //Fait la liste des Hashtags
-ro
+
 
 //Suppression d'un tweet par son Id
 router.delete('/:tweet', (req, res) => {
