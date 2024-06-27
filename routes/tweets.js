@@ -12,17 +12,29 @@ router.post('/newtweet', (req, res) => {
         res.json({ result: false, error: 'Write your tweet!!!' });
     return;
     }
-    const hashtagList = req.body.tweet.match(/#[a-z]+/ig);
-    const newTweet = new Tweet({
-        text: req.body.tweet,
-        creationDate: Date.now(),
-        numberOfLikes: 0,
-        hashtag: hashtagList,
-        // user: { type: mongoose.Schema.Types.ObjectId, ref: 'users'},  
-    });
 
-    newTweet.save().then(() =>
-        res.json({ result: true}));
+    const hashtagList = req.body.tweet.match(/#[a-z]+/ig);
+    const hashtagListNoHashtag = hashtagList.map((hashtag)=> hashtag.replace("#", ""))
+
+    User.findOne({token : req.body.token})
+    .then((data)=> {
+        const newTweet = new Tweet({
+            text: req.body.tweet,
+            creationDate: Date.now(),
+            numberOfLikes: 0,
+            user: data._id,
+            hashtag: hashtagList,
+           
+        });
+        newTweet.save().then(() =>
+            Tweet.find()
+            .populate('user')
+            .then((data) =>
+            res.json({ result: true, tweet: data})))
+      
+
+    })
+
 });
 
 //Récupérer la liste des tweets par hashtag
@@ -30,6 +42,12 @@ router.get('/byhash/:hashtag', (req, res) => {
     const hashtag = req.params.hashtag;
     Tweet.find({ hashtag: hashtag })
         .then(data => res.json({ tweetsWithHashtag: data }))
+});
+
+router.get('/tweetsbyuser', (req, res) => {
+    Tweet.find({ token :'srKROxtbj7A4aiCp5lnwUz5SCJdJSJXD' })
+    .populate('users')
+        .then(data => console.log(data))
 });
 
 //Fait la liste des Hashtags
