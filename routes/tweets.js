@@ -29,7 +29,7 @@ router.post('/newtweet', (req, res) => {
 router.get('/byhash/:hashtag', (req, res) => {
     const hashtag = req.params.hashtag;
     Tweet.find({ hashtag: hashtag })
-        .then(data => res.json({ result: true, tweetsWithHashtag: data }))
+        .then(data => res.json({ tweetsWithHashtag: data }))
 });
 
 //Fait la liste des Hashtags
