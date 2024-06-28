@@ -17,7 +17,7 @@ router.post('/newtweet', (req, res) => {
     if(hashtag){
      hashtagList = hashtag.map((hashtag)=> hashtag.replace("#", "")) 
     }
-    // const hashtagListNoHashtag = hashtagList.map((hashtag)=> hashtag.replace("#", ""))
+   
 console.log(hashtagList)
     User.findOne({token : req.body.token})
     .then((user)=> {
@@ -28,13 +28,14 @@ console.log(hashtagList)
             numberOfLikes: 0,
             user: user._id,
             hashtag: hashtagList,
+            username: req.body.username
            
         });
         newTweet.save().then(() =>
             Tweet.find()
             .populate('user')
             .then((data) =>
-            res.json({ result: true, tweet: data, user: user._id})))
+            res.json({ result: true, tweet: data, user: user._id, username: data})))
       
 
     })
