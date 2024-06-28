@@ -12,17 +12,21 @@ router.post('/newtweet', (req, res) => {
         res.json({ result: false, error: 'Write your tweet!!!' });
     return;
     }
-
-    const hashtagList = req.body.tweet.match(/#[a-z]+/ig);
-    const hashtagListNoHashtag = hashtagList.map((hashtag)=> hashtag.replace("#", ""))
-
+    let hashtagList;
+    const hashtag = req.body.tweet.match(/#[a-z]+/ig);
+    if(hashtag){
+     hashtagList = hashtag.map((hashtag)=> hashtag.replace("#", "")) 
+    }
+    // const hashtagListNoHashtag = hashtagList.map((hashtag)=> hashtag.replace("#", ""))
+console.log(hashtagList)
     User.findOne({token : req.body.token})
-    .then((data)=> {
+    .then((user)=> {
+        console.log(user)
         const newTweet = new Tweet({
             text: req.body.tweet,
             creationDate: Date.now(),
             numberOfLikes: 0,
-            user: data._id,
+            user: user._id,
             hashtag: hashtagList,
            
         });
@@ -30,7 +34,7 @@ router.post('/newtweet', (req, res) => {
             Tweet.find()
             .populate('user')
             .then((data) =>
-            res.json({ result: true, tweet: data})))
+            res.json({ result: true, tweet: data, user: user._id})))
       
 
     })
